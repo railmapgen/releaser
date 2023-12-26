@@ -1,0 +1,76 @@
+name: 'Releaser'
+description: 'Releaser built artefacts of railmapgen projects to GitHub and GitLab'
+inputs:
+  app_name:
+    required: true
+  version:
+    required: true
+  environment:
+    type: string
+    required: true
+  dist:
+    required: true
+  token:
+    required: true
+    default: ${{ github.token }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Parse GitHub org and repo
+      shell: bash
+      run: |
+        if [ ${{ inputs.environment }} == 'PRD' ]
+        then
+          echo "org=railmapgen" >> "$GITHUB_ENV"
+          echo "repo=${{ inputs.app_name }}" >> "$GITHUB_ENV"
+        else
+          echo "org=uat-railmapgen" >> "$GITHUB_ENV"
+          if [ ${{ inputs.app_name }} == 'railmapgen.github.io' ]
+          then
+            echo "repo=uat-railmapgen.github.io" >> "$GITHUB_ENV"
+          else
+            echo "repo=${{ inputs.app_name }}" >> "$GITHUB_ENV"
+          fi
+        fi
+
+    - name: Checkout GitHub target repo
+      uses: actions/checkout@v3
+      with:
+        repository: ${{ env.org }}/${{ env.repo }}
+        path: GITHUB_TARGET
+        token: ${{ secrets.RMG_BUILD_AND_RELEASE }}
+        fetch-depth: 0
+
+    - name: Configure Git
+      shell: bash
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+    - name: Release to GitHub
+      run: ${{ github.action_path }}/release-github.sh
+      shell: bash
+      env:
+        APP_NAME: ${{ inputs.app_name }}
+        VERSION: ${{ inputs.version }}
+        ENV: ${{ inputs.environment }}
+        DIST: ${{ inputs.dist }}
+
+    - name: Checkout GitLab target repo
+      if: ${{ inputs.environment == 'PRD' }}
+      shell: bash
+      run: |
+        if [ ${{ inputs.app_name }} == 'railmapgen.github.io' ]
+        then
+          git clone https://chitowong:${{ secrets.GITLAB_RELEASE }}@gitlab.com/railmapgen/railmapgen.gitlab.io.git GITLAB_REPO/
+        else
+          git clone https://chitowong:${{ secrets.GITLAB_RELEASE }}@gitlab.com/railmapgen/${{ inputs.app_name }}.git GITLAB_REPO/
+        fi
+
+    - name: Release to GitLab
+      run: ${{ github.action_path }}/release-gitlab.sh
+      shell: bash
+      env:
+        APP_NAME: ${{ inputs.app_name }}
+        VERSION: ${{ inputs.version }}
+        DIST: ${{ inputs.dist }}
