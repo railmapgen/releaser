@@ -40,7 +40,7 @@ runs:
         repository: ${{ env.org }}/${{ env.repo }}
         path: GITHUB_TARGET
         token: ${{ inputs.github_token }}
-        fetch-depth: 0
+        fetch-depth: 1
 
     - name: Configure Git
       shell: bash
@@ -63,9 +63,9 @@ runs:
       run: |
         if [ ${{ inputs.app_name }} == 'railmapgen.github.io' ]
         then
-          git clone https://chitowong:${{ inputs.gitlab_token }}@gitlab.com/railmapgen/railmapgen.gitlab.io.git GITLAB_REPO/
+          git clone --depth 1 https://chitowong:${{ inputs.gitlab_token }}@gitlab.com/railmapgen/railmapgen.gitlab.io.git GITLAB_TARGET/
         else
-          git clone https://chitowong:${{ inputs.gitlab_token }}@gitlab.com/railmapgen/${{ inputs.app_name }}.git GITLAB_REPO/
+          git clone --depth 1 https://chitowong:${{ inputs.gitlab_token }}@gitlab.com/railmapgen/${{ inputs.app_name }}.git GITLAB_TARGET/
         fi
 
     - name: Release to GitLab
