@@ -69,6 +69,7 @@ runs:
         fi
 
     - name: Release to GitLab
+      if: ${{ inputs.environment == 'PRD' }}
       run: ${{ github.action_path }}/release-gitlab.sh
       shell: bash
       env:
