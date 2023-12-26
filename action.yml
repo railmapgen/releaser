@@ -10,9 +10,10 @@ inputs:
     required: true
   dist:
     required: true
-  token:
+  github_token:
     required: true
-    default: ${{ github.token }}
+  gitlab_token:
+    required: true
 runs:
   using: 'composite'
   steps:
@@ -38,7 +39,7 @@ runs:
       with:
         repository: ${{ env.org }}/${{ env.repo }}
         path: GITHUB_TARGET
-        token: ${{ secrets.RMG_BUILD_AND_RELEASE }}
+        token: ${{ inputs.github_token }}
         fetch-depth: 0
 
     - name: Configure Git
@@ -62,9 +63,9 @@ runs:
       run: |
         if [ ${{ inputs.app_name }} == 'railmapgen.github.io' ]
         then
-          git clone https://chitowong:${{ secrets.GITLAB_RELEASE }}@gitlab.com/railmapgen/railmapgen.gitlab.io.git GITLAB_REPO/
+          git clone https://chitowong:${{ inputs.gitlab_token }}@gitlab.com/railmapgen/railmapgen.gitlab.io.git GITLAB_REPO/
         else
-          git clone https://chitowong:${{ secrets.GITLAB_RELEASE }}@gitlab.com/railmapgen/${{ inputs.app_name }}.git GITLAB_REPO/
+          git clone https://chitowong:${{ inputs.gitlab_token }}@gitlab.com/railmapgen/${{ inputs.app_name }}.git GITLAB_REPO/
         fi
 
     - name: Release to GitLab
