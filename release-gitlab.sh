@@ -7,7 +7,7 @@ mkdir public
 cd ..
 
 # Copy artefacts
-cp -r "$DIST"/* GITHUB_TARGET/public/
+cp -r "$DIST"/* GITLAB_TARGET/public/
 cd GITLAB_TARGET/
 
 # Write INFO.JSON
