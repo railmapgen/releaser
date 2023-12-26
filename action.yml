@@ -40,7 +40,7 @@ runs:
         repository: ${{ env.org }}/${{ env.repo }}
         path: GITHUB_TARGET
         token: ${{ inputs.github_token }}
-        fetch-depth: 1
+        fetch-depth: 0
 
     - name: Configure Git
       shell: bash
