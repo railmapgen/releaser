@@ -14,7 +14,7 @@ cat >GITEE_TARGET/info.json <<EOF
 {
   "component": "$APP_NAME",
   "version": "$VERSION",
-  "environment": "$ENV",
+  "environment": "PRD",
   "instance": "Gitee"
 }
 EOF
