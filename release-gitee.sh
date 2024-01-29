@@ -1,7 +1,6 @@
 set -eux
 
 # Clear artefact folder
-cd ..
 rm -rf GITEE_TARGET/*
 
 # Copy artefacts
