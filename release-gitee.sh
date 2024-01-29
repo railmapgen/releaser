@@ -22,5 +22,5 @@ EOF
 # Push
 cd GITEE_TARGET
 git add .
-git commit -m "Release version $VERSION to $ENV"
+git commit -m "Release version $VERSION to Gitee"
 git push
