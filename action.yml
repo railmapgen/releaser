@@ -14,6 +14,9 @@ inputs:
     required: true
   gitlab_token:
     required: true
+  gitee_token:
+    required: false
+    type: string
 runs:
   using: 'composite'
   steps:
@@ -71,6 +74,26 @@ runs:
     - name: Release to GitLab
       if: ${{ inputs.environment == 'PRD' }}
       run: ${{ github.action_path }}/release-gitlab.sh
+      shell: bash
+      env:
+        APP_NAME: ${{ inputs.app_name }}
+        VERSION: ${{ inputs.version }}
+        DIST: ${{ inputs.dist }}
+
+    - name: Checkout Gitee target repo
+      if: ${{ inputs.environment == 'PRD' && inputs.gitee_token != '' }}
+      shell: bash
+      run: |
+        if [ ${{ inputs.app_name }} == 'railmapgen.github.io' ]
+        then
+          git clone --depth 1 https://chitowong:${{ inputs.gitlab_token }}@gitee.com/railmapgen/railmapgen.gitee.io.git GITEE_TARGET/
+        else
+          git clone --depth 1 https://chitowong:${{ inputs.gitlab_token }}@gitee.com/railmapgen/${{ inputs.app_name }}.git GITEE_TARGET/
+        fi
+
+    - name: Release to Gitee
+      if: ${{ inputs.environment == 'PRD' && inputs.gitee_token != '' }}
+      run: ${{ github.action_path }}/release-gitee.sh
       shell: bash
       env:
         APP_NAME: ${{ inputs.app_name }}
