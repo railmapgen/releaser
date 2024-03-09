@@ -86,7 +86,7 @@ runs:
       run: |
         if [ ${{ inputs.app_name }} == 'railmapgen.github.io' ]
         then
-          git clone --depth 1 https://chitowong:${{ inputs.gitee_token }}@gitee.com/railmapgen/railmapgen.gitee.io.git GITEE_TARGET/
+          git clone --depth 1 https://chitowong:${{ inputs.gitee_token }}@gitee.com/railmapgen/railmapgen.git GITEE_TARGET/
         else
           git clone --depth 1 https://chitowong:${{ inputs.gitee_token }}@gitee.com/railmapgen/${{ inputs.app_name }}.git GITEE_TARGET/
         fi
