@@ -17,6 +17,9 @@ inputs:
   gitee_token:
     required: false
     type: string
+  gitee_password:
+    required: false
+    type: string
 runs:
   using: 'composite'
   steps:
@@ -99,3 +102,24 @@ runs:
         APP_NAME: ${{ inputs.app_name }}
         VERSION: ${{ inputs.version }}
         DIST: ${{ inputs.dist }}
+
+    - name: Parse Gitee repo name
+      if: ${{ inputs.environment == 'PRD' && inputs.gitee_token != '' }}
+      shell: bash
+      run: |
+        if [ ${{ inputs.app_name }} == 'railmapgen.github.io' ]
+        then
+          echo "gitee_repo=railmapgen" >> "$GITHUB_ENV"
+        else
+          echo "gitee_repo=${{ inputs.app_name }}" >> "$GITHUB_ENV"
+        fi
+
+    # Auto redeployment is only available to gitee pages pro users
+    - name: Redeploy Gitee Pages
+      if: ${{ inputs.environment == 'PRD' && inputs.gitee_token != '' }}
+      uses: yanglbme/gitee-pages-action@main
+      with:
+        gitee-username: thekingofcity
+        gitee-password: ${{ inputs.gitee_password }}
+        gitee-repo: ${{ env.org }}/${{ env.gitee_repo }}
+        branch: main
