@@ -104,7 +104,7 @@ runs:
         DIST: ${{ inputs.dist }}
 
     - name: Parse Gitee repo name
-      if: ${{ inputs.environment == 'PRD' && inputs.gitee_token != '' }}
+      if: ${{ inputs.environment == 'PRD' && inputs.gitee_token != '' && inputs.gitee_password != '' }}
       shell: bash
       run: |
         if [ ${{ inputs.app_name }} == 'railmapgen.github.io' ]
@@ -116,7 +116,7 @@ runs:
 
     # Auto redeployment is only available to gitee pages pro users
     - name: Redeploy Gitee Pages
-      if: ${{ inputs.environment == 'PRD' && inputs.gitee_token != '' }}
+      if: ${{ inputs.environment == 'PRD' && inputs.gitee_token != '' && inputs.gitee_password != '' }}
       uses: yanglbme/gitee-pages-action@main
       with:
         gitee-username: thekingofcity
