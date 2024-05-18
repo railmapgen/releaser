@@ -41,7 +41,7 @@ runs:
         fi
 
     - name: Checkout GitHub target repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: ${{ env.org }}/${{ env.repo }}
         path: GITHUB_TARGET
